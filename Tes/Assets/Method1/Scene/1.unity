@@ -541,7 +541,7 @@ MonoBehaviour:
   ground:
     serializedVersion: 2
     m_Bits: 128
-  jumpForce: 400
+  jumpForce: 600
   lerp: 0.8
 --- !u!54 &1814959640
 Rigidbody:
