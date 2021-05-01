@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Bulet
   m_EditorClassIdentifier: 
   name: Bulet
-  damage: 0
+  damage: 50
   prefab: {fileID: 5567083403270321666, guid: 04b9db327c8d8a643ae17fbf11756092, type: 3}

@@ -6,6 +6,6 @@ using UnityEngine;
 public class ScriptableItem : ScriptableObject
 {
     public string name;
-    public float damage;
+    public int damage;
     public GameObject prefab;
 }

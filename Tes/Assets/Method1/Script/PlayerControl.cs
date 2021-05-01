@@ -1,19 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class PlayerControl : MonoBehaviour
 {
+    public static PlayerControl instance;
     private Rigidbody rb;
     private Vector3 movement;
     private float distoGround;
 
     public LayerMask ground;
     public float jumpForce;
+
+    [Range(0f, 1f)]
     public float lerp;
+
+    public float gravityWorld = -9.8f;
     public float speed;
+    public float rangePelor;
+    public float TweenTime;
+    public float countdown;
+    public ScriptableHealt health;
 
     private bool colapse = false;
+    private GameObject pelor;
 
     [SerializeField]
     private Transform Hand;
@@ -22,11 +33,13 @@ public class PlayerControl : MonoBehaviour
 
     private void Awake()
     {
+        instance = this;
         distoGround = GetComponent<Collider>().bounds.extents.y;
     }
 
     private void Start()
     {
+        Physics.gravity = new Vector3(0, gravityWorld, 0);
         rb = GetComponent<Rigidbody>();
     }
 
@@ -37,13 +50,14 @@ public class PlayerControl : MonoBehaviour
 
     private void Update()
     {
+        countdown -= Time.deltaTime;
         movement = new Vector3(0, 0, Input.GetAxis("Horizontal"));
         movement.Normalize();
 
         if (Input.GetMouseButton(1))
         {
+            colapse = false;
             AttackSpell(0);
-            colapse = true;
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -67,11 +81,23 @@ public class PlayerControl : MonoBehaviour
     {
         Debug.Log("Attack Spell");
 
-        if (!colapse)
+        if (!colapse && countdown <= 0)
         {
-            GameObject go = Instantiate(itemList[index].prefab, Hand.position, Quaternion.identity);
-
-            go.transform.Translate(transform.forward * 100 * Time.deltaTime, Space.World);
+            pelor = Instantiate(itemList[index].prefab, Hand.position, Quaternion.identity);
+            LeanTween.moveLocal(pelor, transform.forward * rangePelor, TweenTime);
+            colapse = true;
+            countdown = 2;
         }
+    }
+
+    public void DestroyPelor()
+    {
+        StopAllCoroutines();
+        Destroy(pelor);
+    }
+
+    public void AddDamage(GameObject Target)
+    {
+        Target.GetComponent<EnemyControl>().health.AddDamage(itemList[0].damage);
     }
 }
