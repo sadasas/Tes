@@ -6,12 +6,19 @@ public class PlayerControl : MonoBehaviour
 {
     private Rigidbody rb;
     private Vector3 movement;
-    public float speed;
-    private bool grounded;
     private float distoGround;
+
     public LayerMask ground;
     public float jumpForce;
     public float lerp;
+    public float speed;
+
+    private bool colapse = false;
+
+    [SerializeField]
+    private Transform Hand;
+
+    public List<ScriptableItem> itemList = new List<ScriptableItem>();
 
     private void Awake()
     {
@@ -32,10 +39,12 @@ public class PlayerControl : MonoBehaviour
     {
         movement = new Vector3(0, 0, Input.GetAxis("Horizontal"));
         movement.Normalize();
-    }
 
-    private void FixedUpdate()
-    {
+        if (Input.GetMouseButton(1))
+        {
+            AttackSpell(0);
+            colapse = true;
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (Grounded())
@@ -43,11 +52,26 @@ public class PlayerControl : MonoBehaviour
                 rb.AddForce(transform.up * jumpForce);
             }
         }
+    }
 
+    private void FixedUpdate()
+    {
         rb.MovePosition(transform.position + movement * speed * Time.deltaTime);
         if (movement.magnitude > 0.1)
         {
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(movement), lerp);
+        }
+    }
+
+    private void AttackSpell(int index)
+    {
+        Debug.Log("Attack Spell");
+
+        if (!colapse)
+        {
+            GameObject go = Instantiate(itemList[index].prefab, Hand.position, Quaternion.identity);
+
+            go.transform.Translate(transform.forward * 100 * Time.deltaTime, Space.World);
         }
     }
 }
