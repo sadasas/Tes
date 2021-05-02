@@ -6,6 +6,7 @@ using UnityEngine.SocialPlatforms;
 public class PlayerControl : MonoBehaviour
 {
     public static PlayerControl instance;
+
     private Rigidbody rb;
     private Vector3 movement;
     private float distoGround;
